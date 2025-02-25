@@ -1,27 +1,29 @@
 <template>
     <div class="auth-container">
-      <h2>Login</h2>
-      <form @submit.prevent="login">
-        <input type="email" v-model="email" placeholder="Email" required />
-        <input type="password" v-model="password" placeholder="Password" required />
-        <button type="submit">Login</button>
-      </form>
-      <p>Don't have an account? <router-link to="/register">Register</router-link></p>
+      <div class="auth-box">
+        <h2>Login</h2>
+        <form @submit.prevent="login">
+          <input type="email" v-model="email" placeholder="Email" required />
+          <input type="password" v-model="password" placeholder="Password" required />
+          <button type="submit">Login</button>
+        </form>
+        <p>Don't have an account? <router-link to="/register">Register</router-link></p>
+      </div>
     </div>
   </template>
   
-  <script setup>
+  <script setup lang="ts">
   import { ref } from 'vue';
   import { useRouter } from 'vue-router';
   import axios from 'axios';
   
-  const email = ref('');
-  const password = ref('');
+  const email = ref<string>('');
+  const password = ref<string>('');
   const router = useRouter();
   
-  const login = async () => {
+  const login = async (): Promise<void> => {
     try {
-      const response = await axios.post('http://localhost:8000/api/login', {
+      const response = await axios.post<{ token: string }>('http://localhost:8000/api/login', {
         email: email.value,
         password: password.value
       });
@@ -34,27 +36,47 @@
   </script>
   
   <style scoped>
-  .auth-container {
-    max-width: 400px;
-    margin: auto;
-    padding: 20px;
-    background: #fff;
-    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
-    border-radius: 8px;
-  }
-  input {
-    display: block;
-    width: 100%;
-    margin-bottom: 10px;
-    padding: 8px;
-  }
-  button {
-    width: 100%;
-    padding: 10px;
-    background: #5c67f2;
-    color: white;
-    border: none;
-    cursor: pointer;
-  }
+.auth-container {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 100vh;
+  background: linear-gradient(to right, #3a1c71, #d76d77, #ffaf7b);
+}
+.auth-box {
+  max-width: 400px;
+  width: 100%;
+  padding: 30px;
+  background: #f8f9fa;
+  box-shadow: 0 0 15px rgba(0, 0, 0, 0.2);
+  border-radius: 10px;
+  text-align: center;
+}
+input {
+  width: 100%;
+  padding: 12px;
+  margin-bottom: 15px;
+  border: 1px solid #ccc;
+  border-radius: 5px;
+  background: #fff;
+}
+.button-container {
+  display: flex;
+  justify-content: center;
+}
+button {
+  width: 80%;
+  padding: 12px;
+  background: #6a11cb;
+  color: white;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+  font-size: 16px;
+  transition: background 0.3s;
+}
+button:hover {
+  background: #4a00e0;
+}
   </style>
   
