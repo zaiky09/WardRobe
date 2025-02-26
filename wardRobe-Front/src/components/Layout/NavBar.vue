@@ -24,7 +24,7 @@
     justify-content: space-between;
     align-items: center;
     padding: 15px;
-    background: #3a1c71;
+    background: linear-gradient(to right, #970D1A, #4E204D);
     color: white;
   }
   ul {
