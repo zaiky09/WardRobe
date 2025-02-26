@@ -1,82 +1,74 @@
 <template>
-    <div class="auth-container">
-      <div class="auth-box">
-        <h2>Login</h2>
-        <form @submit.prevent="login">
-          <input type="email" v-model="email" placeholder="Email" required />
-          <input type="password" v-model="password" placeholder="Password" required />
-          <button type="submit">Login</button>
-        </form>
-        <p>Don't have an account? <router-link to="/register">Register</router-link></p>
-      </div>
-    </div>
-  </template>
-  
-  <script setup lang="ts">
-  import { ref } from 'vue';
-  import { useRouter } from 'vue-router';
-  import axios from 'axios';
-  
-  const email = ref<string>('');
-  const password = ref<string>('');
-  const router = useRouter();
-  
-  const login = async (): Promise<void> => {
-    try {
-      const response = await axios.post<{ token: string }>('http://localhost:8000/api/login', {
-        email: email.value,
-        password: password.value
-      });
-      localStorage.setItem('token', response.data.token);
-      router.push('/');
-    } catch (error) {
-      console.error('Login failed', error);
-    }
-  };
-  </script>
-  
-  <style scoped>
+  <div class="auth-container">
+    <h2 v-if="!isLogin">Register</h2>
+    <h2 v-else>Login</h2>
+
+    <form @submit.prevent="handleSubmit">
+      <input v-model="username" placeholder="Enter Username" required />
+      <input v-model="password" type="password" placeholder="Enter Password" required />
+      <button type="submit">{{ isLogin ? 'Login' : 'Register' }}</button>
+    </form>
+
+    <p @click="toggleForm">
+      {{ isLogin ? "Don't have an account? Register" : "Already have an account? Login" }}
+    </p>
+  </div>
+</template>
+
+<script setup lang="ts">
+import { ref } from 'vue';
+import { useAuthStore } from '../../store/authStore.ts';
+import { useRouter } from 'vue-router';
+
+const authStore = useAuthStore();
+const router = useRouter();
+const username = ref('');
+const password = ref('');
+const isLogin = ref(true);
+
+const handleSubmit = () => {
+  if (isLogin.value) {
+    authStore.login(username.value);
+  } else {
+    authStore.login(username.value); // Simulate user registration
+  }
+  router.push('/wardrobe');
+};
+
+const toggleForm = () => {
+  isLogin.value = !isLogin.value;
+};
+</script>
+
+<style scoped>
 .auth-container {
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  height: 100vh;
-  background: linear-gradient(to right, #3a1c71, #d76d77, #ffaf7b);
-}
-.auth-box {
-  max-width: 400px;
-  width: 100%;
-  padding: 30px;
-  background: #f8f9fa;
-  box-shadow: 0 0 15px rgba(0, 0, 0, 0.2);
-  border-radius: 10px;
+  max-width: 300px;
+  margin: auto;
   text-align: center;
+  background: white;
+  padding: 20px;
+  border-radius: 10px;
+  box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
 }
 input {
+  display: block;
   width: 100%;
-  padding: 12px;
-  margin-bottom: 15px;
-  border: 1px solid #ccc;
+  margin-bottom: 10px;
+  padding: 10px;
+  border: 1px solid #ddd;
   border-radius: 5px;
-  background: #fff;
-}
-.button-container {
-  display: flex;
-  justify-content: center;
 }
 button {
-  width: 80%;
-  padding: 12px;
+  width: 100%;
+  padding: 10px;
   background: #6a11cb;
   color: white;
   border: none;
   border-radius: 5px;
+}
+p {
   cursor: pointer;
-  font-size: 16px;
-  transition: background 0.3s;
+  color: blue;
+  margin-top: 10px;
 }
-button:hover {
-  background: #4a00e0;
-}
-  </style>
-  
+</style>

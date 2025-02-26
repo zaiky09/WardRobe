@@ -1,11 +1,12 @@
 import { createRouter, createWebHistory } from 'vue-router';
+import Home from '../views/Home.vue';
+import Wardrobe from '../views/WardRobe.vue';
 import Login from '../components/Auth/Login.vue';
-import Register from '../components/Auth/Register.vue';
 
 const routes = [
+  { path: '/', component: Home },
+  { path: '/wardrobe', component: Wardrobe },
   { path: '/login', component: Login },
-  { path: '/register', component: Register },
-  { path: '/', redirect: '/login' }, // Redirect to login by default
 ];
 
 const router = createRouter({
